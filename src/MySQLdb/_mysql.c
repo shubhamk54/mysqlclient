@@ -523,9 +523,6 @@ _mysql_ConnectionObject_Initialize(
     if (local_infile != -1)
         mysql_options(&(self->connection), MYSQL_OPT_LOCAL_INFILE, (char *) &local_infile);
 
-    if (ssl) {
-        mysql_ssl_set(&(self->connection), key, cert, ca, capath, cipher);
-    }
     if (ssl_mode) {
 #ifdef HAVE_ENUM_MYSQL_OPT_SSL_MODE
         mysql_options(&(self->connection), MYSQL_OPT_SSL_MODE, &ssl_mode_num);
@@ -1792,7 +1789,6 @@ _mysql_ConnectionObject_kill(
     if (!PyArg_ParseTuple(args, "k:kill", &pid)) return NULL;
     check_connection(self);
     Py_BEGIN_ALLOW_THREADS
-    r = mysql_kill(&(self->connection), pid);
     Py_END_ALLOW_THREADS
     if (r) return _mysql_Exception(self);
     Py_RETURN_NONE;
@@ -2008,7 +2004,6 @@ _mysql_ConnectionObject_shutdown(
     int r;
     check_connection(self);
     Py_BEGIN_ALLOW_THREADS
-    r = mysql_shutdown(&(self->connection), SHUTDOWN_DEFAULT);
     Py_END_ALLOW_THREADS
     if (r) return _mysql_Exception(self);
     Py_RETURN_NONE;
